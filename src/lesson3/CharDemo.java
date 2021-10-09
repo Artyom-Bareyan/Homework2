@@ -12,6 +12,7 @@ public class CharDemo {
 
         if (a > 20) {
 
+            
             System.out.println(c1);
 
 
