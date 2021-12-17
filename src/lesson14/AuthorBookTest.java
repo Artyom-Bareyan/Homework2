@@ -10,7 +10,6 @@ import lesson14.util.DateUtil;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class AuthorBookTest implements AuthorBookCommands {
@@ -44,7 +43,7 @@ public class AuthorBookTest implements AuthorBookCommands {
         }
     }
 
-    private static void login() throws ParseException {
+    private static void login() {
         System.out.println("please input email");
         String email = scanner.nextLine();
         User byEmail = userStorage.getByEmail(email);
@@ -65,7 +64,7 @@ public class AuthorBookTest implements AuthorBookCommands {
         }
     }
 
-    private static void userLogin() throws ParseException {
+    private static void userLogin() {
         boolean isRun = true;
         while (isRun) {
             AuthorBookCommands.printUserCommands();
@@ -73,7 +72,7 @@ public class AuthorBookTest implements AuthorBookCommands {
             String command = scanner.nextLine();
             switch (command) {
                 case EXIT:
-                    isRun = false;
+                    System.exit(0);
                     break;
                 case ADD_AUTHORS:
                     addAuthor();
@@ -102,6 +101,9 @@ public class AuthorBookTest implements AuthorBookCommands {
                     break;
                 case COUNT_BOOKS_BY_AUTHOR:
                     countBooksByAuthor();
+                    break;
+                case LOGOUT:
+                    isRun = false;
                     break;
                 default:
                     System.out.println("Invalid command");
@@ -142,7 +144,7 @@ public class AuthorBookTest implements AuthorBookCommands {
 
     }
 
-    private static void adminLogin() throws ParseException {
+    private static void adminLogin() {
         boolean isRun = true;
         while (isRun) {
             AuthorBookCommands.printAdminCommands();
@@ -150,7 +152,7 @@ public class AuthorBookTest implements AuthorBookCommands {
             String command = scanner.nextLine();
             switch (command) {
                 case EXIT:
-                    isRun = false;
+                    System.exit(0);
                     break;
                 case ADD_AUTHORS:
                     addAuthor();
@@ -200,6 +202,9 @@ public class AuthorBookTest implements AuthorBookCommands {
                     break;
                 case REMOVE_TAGS_FROM_BOOK:
                     removeTagsToBook();
+                    break;
+                case LOGOUT:
+                    isRun = false;
                     break;
                 default:
                     System.out.println("Invalid command");
@@ -516,13 +521,19 @@ public class AuthorBookTest implements AuthorBookCommands {
         authorStorage.searchByName(keyword);
     }
 
-    private static void addAuthor() throws ParseException {
+    private static void addAuthor() {
         System.out.println("please input author's name,surname,email,gender,age,dateOfBirth[01/12/2021]");
         String authorDataStr = scanner.nextLine();
         String[] authorData = authorDataStr.split(",");
         if (authorData.length == 6) {
             int age = Integer.parseInt(authorData[4]);
-            Date date = DateUtil.stringToDate(authorData[5]);
+            Date date = null;
+            try {
+                date = DateUtil.stringToDate(authorData[5]);
+            } catch (ParseException e) {
+                System.out.println("invalid date format,please respect this format [12/12/2021");
+                return;
+            }
             Author author = new Author(authorData[0], authorData[1], age, authorData[2], authorData[3], date);
             if (authorStorage.getByEmail(author.getEmail()) != null) {
                 System.err.println("Invalid email. Author with this email already exists");
@@ -535,5 +546,9 @@ public class AuthorBookTest implements AuthorBookCommands {
         }
 
 
+    }
+
+    public static void setIsExist(boolean isExist) {
+        AuthorBookTest.isExist = isExist;
     }
 }
