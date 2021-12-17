@@ -1,0 +1,82 @@
+package lesson14.storage;
+
+import lesson14.model.Author;
+
+public class AuthorStorage {
+
+
+    private Author[] authors = new Author[16];
+    private int size;
+
+    public void add(Author author) {
+        if (authors.length == size) {
+            extend();
+        }
+
+        if (getByEmail(author.getEmail()) != null) {
+            System.err.println("Invalid email. Author with this email already exists");
+        } else {
+            authors[size++] = author;
+        }
+    }
+
+    private void extend() {
+        Author[] tmp = new Author[authors.length + 10];
+
+        authors = tmp;
+    }
+
+    public void print() {
+        for (int i = 0; i < size; i++) {
+            System.out.println(authors[i]);
+
+        }
+    }
+
+    public void searchByName(String keyword) {
+        for (int i = 0; i < size; i++) {
+            if (authors[i].getName().contains(keyword)
+                    || authors[i].getSurname().contains(keyword)) {
+                System.out.println(authors[i]);
+            }
+        }
+    }
+
+    public void searchByAge(int minAge, int maxAge) {
+        for (int i = 0; i < size; i++) {
+            if (authors[i].getAge() > minAge &&
+                    authors[i].getAge() < maxAge) {
+                System.out.println(authors[i]);
+            }
+        }
+        ;
+    }
+
+    public Author getByEmail(String email) {
+        for (int i = 0; i < size; i++) {
+            if (authors[i].getEmail().equals(email)) {
+                return authors[i];
+            }
+        }
+        return null;
+    }
+
+    public void delete(Author author) {
+        for (int i = 0; i < size; i++) {
+            if (authors[i].equals(author)){
+                deleteByIndex(i);
+                break;
+            }
+        }
+
+
+    }
+
+    private void deleteByIndex(int index){
+        for (int i = index + 1; i <size ; i++) {
+            authors[i-1]=authors[i];
+        }
+        size--;
+    }
+}
+
